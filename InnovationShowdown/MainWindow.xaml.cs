@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -13,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace InnovationShowdown
 {
@@ -25,31 +27,36 @@ namespace InnovationShowdown
         {
             InitializeComponent();
 
-            singleKnock.Visibility = Visibility.Hidden;
-            doubleKnock.Visibility = Visibility.Hidden;
-            heldKnock.Visibility = Visibility.Hidden;
+            //Hide();
 
-            string[] args = Environment.GetCommandLineArgs();
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += TimerTick;
+            timer.Start();
+        }
 
-            if (args.Length == 2)
+        void TimerTick(object sender, EventArgs e)
+        {
+            var fs = new FileStream("..\\..\\TEST.txt", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using (var sr = new StreamReader(fs))
             {
-                switch (args[1])
+                var message = sr.ReadLine();
+                this.Dispatcher.Invoke(() =>
                 {
-                    case "1":
-                        singleKnock.Visibility = Visibility.Visible;
-                        singleKnock.Text = "";
-                        break;
-                    case "2":
-                        doubleKnock.Visibility = Visibility.Visible;
-                        doubleKnock.Text = "";
-                        break;
-                    case "3":
-                        heldKnock.Visibility = Visibility.Visible;
-                        heldKnock.Text = "";
-                        break;
-                }
-
-                // Make window close
+                    Show();
+                    switch (message)
+                    {
+                        case "1": // Single Press
+                            heldKnock.Text = "Someone has entered the room.";
+                            break;
+                        case "2": // Hold Press
+                            heldKnock.Text = "Someone is waiting for you.";
+                            break;
+                        case "3": // Double Press
+                            heldKnock.Text = "Someone needs to speak with you.";
+                            break;
+                    }
+                });
             }
         }
     }
