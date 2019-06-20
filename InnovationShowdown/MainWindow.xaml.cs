@@ -27,7 +27,7 @@ namespace InnovationShowdown
         {
             InitializeComponent();
 
-            //Hide();
+            Application.Current.MainWindow.Hide();
 
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
@@ -41,23 +41,34 @@ namespace InnovationShowdown
             using (var sr = new StreamReader(fs))
             {
                 var message = sr.ReadLine();
-                this.Dispatcher.Invoke(() =>
+                if (!String.IsNullOrEmpty(message))
                 {
-                    Show();
-                    switch (message)
+                    this.Dispatcher.Invoke(() =>
                     {
-                        case "1": // Single Press
-                            heldKnock.Text = "Someone has entered the room.";
-                            break;
-                        case "2": // Hold Press
-                            heldKnock.Text = "Someone is waiting for you.";
-                            break;
-                        case "3": // Double Press
-                            heldKnock.Text = "Someone needs to speak with you.";
-                            break;
-                    }
-                });
+                        Application.Current.MainWindow.Show();
+                        switch (message)
+                        {
+                            case "1": // Single Press
+                                heldKnock.Text = "Someone has entered the room.";
+                                break;
+                            case "2": // Hold Press
+                                heldKnock.Text = "Someone is waiting for you.";
+                                break;
+                            case "3": // Double Press
+                                heldKnock.Text = "Someone needs to speak with you.";
+                                break;
+                            default:
+                                Application.Current.MainWindow.Hide();
+                                break;
+                        }
+                    });
+                }
             }
+        }
+
+        private void DismissClick(object sender, RoutedEventArgs e)
+        {
+            Application.Current.MainWindow.Hide();
         }
     }
 }

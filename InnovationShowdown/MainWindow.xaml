@@ -9,23 +9,36 @@
         AllowsTransparency = "True" WindowStyle="None"
         >
     <Window.Background>
-        <SolidColorBrush Opacity="1" Color="#FF00586F"/>
+        <SolidColorBrush Opacity="0" Color="#FF00586F"/>
     </Window.Background>
     <Grid>
         <Grid.Background>
-            <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
-                <GradientStop Color="#FF00586F" Offset="0"/>
-                <GradientStop Color="#FF80979C" Offset="1"/>
+            <LinearGradientBrush EndPoint="0,2" StartPoint="0,0">
+                <GradientStop Color="#00586F" Offset="0"/>
+                <GradientStop Color="#96DAEA" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
-        <TextBlock x:Name="singleKnock" HorizontalAlignment="Left" Margin="452,42,0,0" TextWrapping="Wrap" Text="SINGLE KNOCK" VerticalAlignment="Top"/>
-        <Image x:Name="AlertIcon" Margin="0,0,546,0">
+        <Grid.Resources>
+            <Style TargetType="TextBlock">
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="FontSize" Value="25" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="FontFamily" Value="Arial" />
+            </Style>
+        </Grid.Resources>
+
+        <Image x:Name="AlertIcon" HorizontalAlignment="left">
             <Image.Source>
                 <BitmapImage UriSource="/images/alertGreen.png" />
             </Image.Source>
         </Image>
-        <TextBlock x:Name="doubleKnock" HorizontalAlignment="Left" Margin="533,50,0,0" TextWrapping="Wrap" Text="DOUBLE KNOCK" VerticalAlignment="Top"/>
-        <TextBlock x:Name="heldKnock" HorizontalAlignment="Left" Margin="452,63,0,0" TextWrapping="Wrap" Text="HELD KNOCK" VerticalAlignment="Top"/>
-        <TextBlock x:Name="Title" HorizontalAlignment="Left" Margin="400,10,0,0" TextWrapping="Wrap" Text="DOORBELL" VerticalAlignment="Top"/>
+        <TextBlock x:Name="heldKnock" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Text="SOMEONE NEEDS TO SPEAK WITH YOU" Width="485" Height="40" />
+        <TextBlock x:Name="Title" HorizontalAlignment="Center" VerticalAlignment="Top" TextWrapping="Wrap" Text="ALERT:"/>
+        <Image x:Name="AlertIcon_Copy"  HorizontalAlignment="right">
+            <Image.Source>
+                <BitmapImage UriSource="/images/alertGreen.png" />
+            </Image.Source>
+        </Image>
+        <Button Click="DismissClick" Opacity="0"/>
     </Grid>
 </Window>
