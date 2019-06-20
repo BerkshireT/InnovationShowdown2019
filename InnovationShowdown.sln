@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnovationShowdown", "InnovationShowdown\InnovationShowdown.csproj", "{B6D4B81F-2E75-4DA9-B3E3-2D161106DE00}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoorbellVR", "InnovationShowdown\DoorbellVR.csproj", "{B6D4B81F-2E75-4DA9-B3E3-2D161106DE00}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
