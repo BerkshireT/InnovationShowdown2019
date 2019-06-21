@@ -32,13 +32,13 @@
                 <BitmapImage UriSource="/images/alertGreen.png" />
             </Image.Source>
         </Image>
-        <TextBlock x:Name="heldKnock" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Text="SOMEONE NEEDS TO SPEAK WITH YOU" Width="485" Height="40" />
-        <TextBlock x:Name="Title" HorizontalAlignment="Center" VerticalAlignment="Top" TextWrapping="Wrap" Text="ALERT:"/>
+        <TextBlock x:Name="knock" HorizontalAlignment="Center" TextWrapping="Wrap" Text="" Margin="225,46,223,24" />
+        <TextBlock x:Name="title" HorizontalAlignment="Center" VerticalAlignment="Top" TextWrapping="Wrap" Text="ALERT:" FontSize="36"/>
         <Image x:Name="AlertIcon_Copy"  HorizontalAlignment="right">
             <Image.Source>
                 <BitmapImage UriSource="/images/alertGreen.png" />
             </Image.Source>
         </Image>
-        <Button Click="DismissClick" Opacity="0"/>
+        <!--<Rectangle x:Name="HideBox" Fill="Black" HorizontalAlignment="Left" Height="100" Stroke="Black" VerticalAlignment="Top" Width="800"/>-->
     </Grid>
 </Window>

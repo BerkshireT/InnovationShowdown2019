@@ -1,20 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Media;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
+using Amazon.SQS;
+using Amazon.SQS.Model;
 
 namespace InnovationShowdown
 {
@@ -27,48 +19,88 @@ namespace InnovationShowdown
         {
             InitializeComponent();
 
-            Application.Current.MainWindow.Hide();
+            makeTransparent(true);
 
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
-            timer.Tick += TimerTick;
+            timer.Tick += new EventHandler(updateMessage);
             timer.Start();
         }
 
-        void TimerTick(object sender, EventArgs e)
+
+        private async void updateMessage(object sender, EventArgs e)
         {
-            var fs = new FileStream("..\\..\\TEST.txt", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            using (var sr = new StreamReader(fs))
+            int mode = updateUrgency();
+            if (mode != 0)
             {
-                var message = sr.ReadLine();
-                if (!String.IsNullOrEmpty(message))
+                SystemSounds.Hand.Play();
+                makeTransparent(false);
+                switch (mode)
                 {
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        Application.Current.MainWindow.Show();
-                        switch (message)
-                        {
-                            case "1": // Single Press
-                                heldKnock.Text = "Someone has entered the room.";
-                                break;
-                            case "2": // Hold Press
-                                heldKnock.Text = "Someone is waiting for you.";
-                                break;
-                            case "3": // Double Press
-                                heldKnock.Text = "Someone needs to speak with you.";
-                                break;
-                            default:
-                                Application.Current.MainWindow.Hide();
-                                break;
-                        }
-                    });
+                    case 1:
+                        knock.Text = "Someone has entered the room";
+                        break;
+                    case 2:
+                        knock.Text = "Someone is waiting for you";
+                        break;
+                    case 3:
+                        knock.Text = "Someone needs to speak with you";
+                        break;
                 }
+                await Task.Delay(6000);
+                makeTransparent(true);
             }
         }
 
-        private void DismissClick(object sender, RoutedEventArgs e)
+        private void makeTransparent(bool transparent)
         {
-            Application.Current.MainWindow.Hide();
+            if (transparent)
+            {
+                knock.Opacity = 0;
+                title.Opacity = 0;
+                AlertIcon.Opacity = 0;
+                AlertIcon_Copy.Opacity = 0;
+                this.Opacity = 0;
+            }
+            else
+            {
+                knock.Opacity = 1;
+                title.Opacity = 1;
+                AlertIcon.Opacity = 1;
+                AlertIcon_Copy.Opacity = 1;
+                this.Opacity = 1;
+            }
+        }
+
+        private int updateUrgency()
+        {
+            int currentUrgency = 0;
+            var accessKey = "key";
+            var secretKey = "key";
+            var sqsConfig = new AmazonSQSConfig();
+            sqsConfig.ServiceURL = "http://sqs.us-east-1.amazonaws.com";
+            var sqsClient = new AmazonSQSClient(accessKey, secretKey, sqsConfig);
+            var receiveMessageRequest = new ReceiveMessageRequest();
+            var queueUrl = "https://sqs.us-east-1.amazonaws.com/275098837840/InnovationShowdownButton5";
+            receiveMessageRequest.QueueUrl = queueUrl;
+            var receiveMessageResponse = sqsClient.ReceiveMessage(receiveMessageRequest);
+            var result = receiveMessageResponse.Messages;
+            foreach (var message in result)
+            {
+                for (int i = 1; i <= 3; i++)
+                {
+                    if (message.Body.Contains("urgency=" + i))
+                    {
+                        currentUrgency = i;
+                        Console.Write(currentUrgency);
+                    }
+                }
+                var deleteMessageRequest = new DeleteMessageRequest();
+                deleteMessageRequest.QueueUrl = queueUrl;
+                deleteMessageRequest.ReceiptHandle = message.ReceiptHandle;
+                var response = sqsClient.DeleteMessage(deleteMessageRequest);
+            }
+            return currentUrgency;
         }
     }
 }
